@@ -334,11 +334,107 @@
             this.state = state;
             this.renderer = renderer;
             this.elements = {};
+            this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
             
             this.cacheElements();
             this.initializeControls();
             this.bindEvents();
             this.setupKeyboardShortcuts();
+            this.setupTouchFeatures();
+        }
+        
+        setupTouchFeatures() {
+            if (this.isTouchDevice) {
+                // Add touch class to body for CSS targeting
+                document.body.classList.add('touch-device');
+                
+                // Add swipe to open/close panel on mobile
+                this.setupPanelSwipe();
+                
+                // Prevent zoom on double tap for sliders
+                document.addEventListener('touchstart', (e) => {
+                    if (e.target.classList.contains('slider')) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                // Add haptic feedback if available
+                if ('vibrate' in navigator) {
+                    document.querySelectorAll('.slider').forEach(slider => {
+                        slider.addEventListener('touchstart', () => {
+                            navigator.vibrate(10); // Small haptic feedback
+                        });
+                    });
+                    
+                    document.querySelectorAll('.btn-preset, .btn-mode').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            navigator.vibrate(15); // Slightly stronger for buttons
+                        });
+                    });
+                }
+                
+                // Fix for iOS Safari range input
+                this.fixIOSRangeInputs();
+            }
+        }
+        
+        fixIOSRangeInputs() {
+            // iOS Safari sometimes has issues with range inputs
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            if (isIOS) {
+                document.querySelectorAll('.slider').forEach(slider => {
+                    // Force webkit appearance
+                    slider.style.webkitAppearance = 'none';
+                    
+                    // Add touch-action to prevent scrolling
+                    slider.style.touchAction = 'none';
+                });
+            }
+        }
+        
+        setupPanelSwipe() {
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let panelStartX = 0;
+            
+            const handleTouchStart = (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                panelStartX = this.elements.controlPanel.getBoundingClientRect().left;
+            };
+            
+            const handleTouchMove = (e) => {
+                if (!touchStartX) return;
+                
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const diffX = touchX - touchStartX;
+                const diffY = Math.abs(touchY - touchStartY);
+                
+                // Only handle horizontal swipes
+                if (Math.abs(diffX) > diffY && Math.abs(diffX) > 10) {
+                    e.preventDefault();
+                    
+                    // Swipe right to open panel (from left edge)
+                    if (diffX > 50 && touchStartX < 50) {
+                        this.elements.controlPanel.classList.add('open');
+                    }
+                    // Swipe left to close panel
+                    else if (diffX < -50 && this.elements.controlPanel.classList.contains('open')) {
+                        this.elements.controlPanel.classList.remove('open');
+                    }
+                }
+            };
+            
+            const handleTouchEnd = () => {
+                touchStartX = 0;
+                touchStartY = 0;
+            };
+            
+            document.addEventListener('touchstart', handleTouchStart, { passive: true });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
         }
         
         cacheElements() {
@@ -346,6 +442,7 @@
             this.elements.loadingScreen = document.getElementById('loadingScreen');
             
             // Header controls
+            this.elements.btnMobileMenu = document.getElementById('btnMobileMenu');
             this.elements.btnFullscreen = document.getElementById('btnFullscreen');
             this.elements.btnScreenshot = document.getElementById('btnScreenshot');
             this.elements.btnInfo = document.getElementById('btnInfo');
@@ -496,10 +593,9 @@
             // Frequency slider
             const freqSlider = document.getElementById(`wave${waveNum}Frequency`);
             if (freqSlider) {
-                freqSlider.addEventListener('input', (e) => {
-                    const value = parseFloat(e.target.value);
+                this.addSliderEvents(freqSlider, (value) => {
                     this.state.updateWave(waveIndex, 'frequency', value);
-                    e.target.nextElementSibling.textContent = `${value.toFixed(1)} Hz`;
+                    freqSlider.nextElementSibling.textContent = `${value.toFixed(1)} Hz`;
                     this.updateStats();
                 });
             }
@@ -507,10 +603,10 @@
             // Amplitude slider
             const ampSlider = document.getElementById(`wave${waveNum}Amplitude`);
             if (ampSlider) {
-                ampSlider.addEventListener('input', (e) => {
-                    const value = parseInt(e.target.value);
+                this.addSliderEvents(ampSlider, (value) => {
+                    value = parseInt(value);
                     this.state.updateWave(waveIndex, 'amplitude', value);
-                    e.target.nextElementSibling.textContent = value;
+                    ampSlider.nextElementSibling.textContent = value;
                     this.updateStats();
                 });
             }
@@ -518,10 +614,10 @@
             // Phase slider
             const phaseSlider = document.getElementById(`wave${waveNum}Phase`);
             if (phaseSlider) {
-                phaseSlider.addEventListener('input', (e) => {
-                    const value = parseInt(e.target.value);
+                this.addSliderEvents(phaseSlider, (value) => {
+                    value = parseInt(value);
                     this.state.updateWave(waveIndex, 'phase', value);
-                    e.target.nextElementSibling.textContent = `${value}°`;
+                    phaseSlider.nextElementSibling.textContent = `${value}°`;
                     this.updateStats();
                 });
             }
@@ -529,16 +625,73 @@
             // Direction slider
             const dirSlider = document.getElementById(`wave${waveNum}Direction`);
             if (dirSlider) {
-                dirSlider.addEventListener('input', (e) => {
-                    const value = parseInt(e.target.value);
+                this.addSliderEvents(dirSlider, (value) => {
+                    value = parseInt(value);
                     this.state.updateWave(waveIndex, 'direction', value);
-                    e.target.nextElementSibling.textContent = `${value}°`;
+                    dirSlider.nextElementSibling.textContent = `${value}°`;
                 });
             }
         }
         
+        addSliderEvents(slider, callback) {
+            let isInteracting = false;
+            
+            // Handle input event for all interactions
+            slider.addEventListener('input', (e) => {
+                callback(parseFloat(e.target.value));
+            });
+            
+            // Touch events for better mobile support
+            const handleStart = (e) => {
+                isInteracting = true;
+                slider.classList.add('active');
+                // Prevent scrolling while interacting with slider
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                    // Store scroll position
+                    const scrollY = window.scrollY;
+                    document.body.style.position = 'fixed';
+                    document.body.style.top = `-${scrollY}px`;
+                    document.body.style.width = '100%';
+                }
+            };
+            
+            const handleEnd = (e) => {
+                isInteracting = false;
+                slider.classList.remove('active');
+                // Re-enable scrolling
+                if (e.type === 'touchend' || e.type === 'touchcancel') {
+                    // Restore scroll position
+                    const scrollY = document.body.style.top;
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.width = '';
+                    if (scrollY) {
+                        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                    }
+                }
+            };
+            
+            // Add both touch and mouse events
+            slider.addEventListener('touchstart', handleStart, { passive: false });
+            slider.addEventListener('touchend', handleEnd);
+            slider.addEventListener('touchcancel', handleEnd);
+            slider.addEventListener('mousedown', handleStart);
+            slider.addEventListener('mouseup', handleEnd);
+            slider.addEventListener('mouseleave', handleEnd);
+        }
+        
         bindEvents() {
             // Header controls
+            if (this.elements.btnMobileMenu) {
+                this.elements.btnMobileMenu.addEventListener('click', () => {
+                    this.elements.controlPanel.classList.toggle('open');
+                    const icon = this.elements.btnMobileMenu.querySelector('i');
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                });
+            }
+            
             this.elements.btnFullscreen.addEventListener('click', () => this.toggleFullscreen());
             this.elements.btnScreenshot.addEventListener('click', () => this.renderer.screenshot());
             this.elements.btnInfo.addEventListener('click', () => this.showModal());
@@ -552,13 +705,13 @@
             });
             
             // Global controls
-            this.elements.globalSpeed.addEventListener('input', (e) => {
-                this.state.globalSpeed = parseFloat(e.target.value);
+            this.addSliderEvents(this.elements.globalSpeed, (value) => {
+                this.state.globalSpeed = parseFloat(value);
                 this.elements.globalSpeedValue.textContent = `${this.state.globalSpeed.toFixed(1)}x`;
             });
             
-            this.elements.colorIntensity.addEventListener('input', (e) => {
-                this.state.colorIntensity = parseInt(e.target.value);
+            this.addSliderEvents(this.elements.colorIntensity, (value) => {
+                this.state.colorIntensity = parseInt(value);
                 this.elements.colorIntensityValue.textContent = `${this.state.colorIntensity}%`;
             });
             
