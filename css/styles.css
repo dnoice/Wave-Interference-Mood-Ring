@@ -24,6 +24,10 @@ body {
     overflow: hidden;
     position: relative;
     height: 100vh;
+    /* Prevent iOS bounce scrolling */
+    position: fixed;
+    width: 100%;
+    overscroll-behavior: none;
 }
 
 /* ========== Loading Screen ========== */
@@ -231,6 +235,17 @@ body {
     transform: translateY(0);
 }
 
+/* Mobile menu button - hidden on desktop */
+.btn-mobile-menu {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .btn-mobile-menu {
+        display: flex;
+    }
+}
+
 .btn-primary {
     padding: var(--space-3) var(--space-6);
     background: var(--gradient-primary);
@@ -334,6 +349,24 @@ body {
     overflow-y: auto;
     transition: transform var(--transition-slow) var(--ease-in-out);
     position: relative;
+    /* Smooth scrolling for touch devices */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Touch-optimized scrolling */
+@media (pointer: coarse) {
+    .control-panel {
+        /* Add momentum scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
+        /* Prevent pull-to-refresh */
+        overscroll-behavior-y: contain;
+    }
+    
+    .panel-content {
+        /* Add padding at bottom for easier scrolling */
+        padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+    }
 }
 
 .control-panel.collapsed {
@@ -410,6 +443,9 @@ body {
     display: flex;
     align-items: center;
     gap: var(--space-3);
+    position: relative;
+    /* Add padding for better touch targets */
+    padding: var(--space-2) 0;
 }
 
 .slider {
@@ -421,6 +457,20 @@ body {
     border-radius: var(--radius-full);
     outline: none;
     transition: all var(--transition-base) var(--ease-out);
+    /* Better touch target */
+    position: relative;
+    margin: var(--space-2) 0;
+}
+
+/* Increase touch target area for sliders */
+.slider::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    bottom: -12px;
+    left: 0;
+    right: 0;
+    z-index: -1;
 }
 
 .slider::-webkit-slider-thumb {
@@ -433,6 +483,8 @@ body {
     cursor: pointer;
     box-shadow: var(--shadow-glow-sm);
     transition: all var(--transition-base) var(--ease-out);
+    position: relative;
+    z-index: 2;
 }
 
 .slider::-moz-range-thumb {
@@ -443,6 +495,40 @@ body {
     cursor: pointer;
     box-shadow: var(--shadow-glow-sm);
     transition: all var(--transition-base) var(--ease-out);
+    border: none;
+    position: relative;
+    z-index: 2;
+}
+
+/* Touch-friendly thumb sizes */
+@media (pointer: coarse) {
+    .slider {
+        height: 8px;
+        margin: var(--space-3) 0;
+    }
+    
+    .slider::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+        box-shadow: var(--shadow-glow-md), 0 0 0 8px rgba(255, 255, 255, 0.05);
+    }
+    
+    .slider::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+        box-shadow: var(--shadow-glow-md), 0 0 0 8px rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Visual feedback for touch */
+    .slider:active::-webkit-slider-thumb {
+        transform: scale(1.2);
+        box-shadow: var(--shadow-glow-lg), 0 0 0 12px rgba(255, 255, 255, 0.1);
+    }
+    
+    .slider:active::-moz-range-thumb {
+        transform: scale(1.2);
+        box-shadow: var(--shadow-glow-lg), 0 0 0 12px rgba(255, 255, 255, 0.1);
+    }
 }
 
 .slider:hover {
@@ -457,6 +543,36 @@ body {
 .slider:hover::-moz-range-thumb {
     transform: scale(1.2);
     box-shadow: var(--shadow-glow-md);
+}
+
+/* Active state for better feedback */
+.slider:active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.slider:active::-webkit-slider-thumb {
+    transform: scale(1.3);
+    box-shadow: var(--shadow-glow-lg);
+}
+
+.slider:active::-moz-range-thumb {
+    transform: scale(1.3);
+    box-shadow: var(--shadow-glow-lg);
+}
+
+/* Visual feedback when slider is being manipulated */
+.slider.active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.slider.active::-webkit-slider-thumb {
+    transform: scale(1.4);
+    box-shadow: var(--shadow-glow-xl), 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.slider.active::-moz-range-thumb {
+    transform: scale(1.4);
+    box-shadow: var(--shadow-glow-xl), 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 .slider-value {
@@ -580,6 +696,9 @@ body {
     display: inline-block;
     width: 50px;
     height: 26px;
+    /* Better touch target */
+    padding: 4px;
+    margin: -4px;
 }
 
 .toggle-switch input {
@@ -616,6 +735,66 @@ body {
 .toggle-switch input:checked + .toggle-slider:before {
     transform: translateX(24px);
     background: white;
+}
+
+/* Touch feedback */
+.toggle-switch:active .toggle-slider {
+    transform: scale(0.95);
+}
+
+/* iOS-specific fixes for better touch interaction */
+@supports (-webkit-touch-callout: none) {
+    .slider {
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .slider::-webkit-slider-thumb {
+        cursor: grab;
+        -webkit-appearance: none;
+    }
+    
+    .slider:active::-webkit-slider-thumb {
+        cursor: grabbing;
+    }
+    
+    /* Prevent iOS zoom on form controls */
+    input[type="range"] {
+        font-size: 16px;
+    }
+}
+
+/* Android-specific optimizations */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .slider {
+        /* Ensure smooth tracking on Android */
+        touch-action: none;
+    }
+    
+    .slider::-webkit-slider-thumb {
+        /* Ensure thumb is above track on Android */
+        position: relative;
+        z-index: 1;
+    }
+}
+
+/* Additional touch optimizations */
+.touch-device .slider {
+    /* Larger hit area for touch */
+    padding: var(--space-3) 0;
+    margin: calc(-1 * var(--space-3)) 0;
+}
+
+.touch-device .control-group {
+    /* More spacing between controls on touch devices */
+    margin-bottom: calc(var(--space-5) * 1.5);
+}
+
+.touch-device .slider-value {
+    /* Larger text for better readability */
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
 }
 
 /* ========== Preset Grid ========== */
@@ -813,6 +992,13 @@ body {
 
 .slide-in {
     animation: slideIn var(--transition-slow) var(--ease-out);
+}
+
+/* Prevent scrolling when interacting with controls */
+.no-scroll {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
 }
 
 @keyframes slideIn {
