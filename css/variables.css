@@ -1,0 +1,272 @@
+/* CSS Variables - Comprehensive Theming System */
+
+:root {
+    /* ========== Color Palette ========== */
+    
+    /* Primary Colors */
+    --primary-100: #e6f2ff;
+    --primary-200: #bae0ff;
+    --primary-300: #7cc4fa;
+    --primary-400: #47a3f3;
+    --primary-500: #2186eb;
+    --primary-600: #0967d2;
+    --primary-700: #0552b5;
+    --primary-800: #03449e;
+    --primary-900: #01337d;
+    
+    /* Secondary Colors */
+    --secondary-100: #f0e7fe;
+    --secondary-200: #e1cffc;
+    --secondary-300: #c3a7f9;
+    --secondary-400: #a47ff5;
+    --secondary-500: #8657f1;
+    --secondary-600: #6a3de8;
+    --secondary-700: #5028c7;
+    --secondary-800: #3e1f9e;
+    --secondary-900: #2d1775;
+    
+    /* Accent Colors */
+    --accent-cyan: #06ffa5;
+    --accent-magenta: #ff0099;
+    --accent-yellow: #ffea00;
+    --accent-orange: #ff6b35;
+    --accent-purple: #8b5cf6;
+    --accent-teal: #14b8a6;
+    
+    /* Dark Theme Base */
+    --dark-50: #fafafa;
+    --dark-100: #e5e5e7;
+    --dark-200: #c9c9ce;
+    --dark-300: #9d9da6;
+    --dark-400: #71717a;
+    --dark-500: #52525b;
+    --dark-600: #3f3f46;
+    --dark-700: #27272a;
+    --dark-800: #18181b;
+    --dark-900: #0a0a0f;
+    --dark-950: #050507;
+    
+    /* Semantic Colors */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    --color-info: #3b82f6;
+    
+    /* ========== Typography ========== */
+    
+    --font-primary: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    
+    /* Font Sizes - Fluid Typography */
+    --fs-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --fs-sm: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);
+    --fs-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --fs-lg: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
+    --fs-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+    --fs-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+    --fs-3xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.25rem);
+    --fs-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);
+    --fs-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+    
+    /* Font Weights */
+    --fw-light: 300;
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    
+    /* Line Heights */
+    --lh-tight: 1.2;
+    --lh-snug: 1.375;
+    --lh-normal: 1.6;
+    --lh-relaxed: 1.75;
+    --lh-loose: 2;
+    
+    /* Letter Spacing */
+    --ls-tight: -0.05em;
+    --ls-normal: 0;
+    --ls-wide: 0.025em;
+    --ls-wider: 0.05em;
+    --ls-widest: 0.1em;
+    
+    /* ========== Spacing System ========== */
+    
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+    
+    /* ========== Layout ========== */
+    
+    --container-xs: 320px;
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1536px;
+    
+    --sidebar-width: 380px;
+    --sidebar-collapsed: 60px;
+    --header-height: 70px;
+    
+    /* ========== Borders & Radius ========== */
+    
+    --border-width-thin: 1px;
+    --border-width-medium: 2px;
+    --border-width-thick: 4px;
+    
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-3xl: 2rem;
+    --radius-full: 9999px;
+    
+    /* ========== Shadows ========== */
+    
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    
+    /* Glow Shadows */
+    --shadow-glow-sm: 0 0 10px rgba(134, 87, 241, 0.3);
+    --shadow-glow-md: 0 0 20px rgba(134, 87, 241, 0.4);
+    --shadow-glow-lg: 0 0 40px rgba(134, 87, 241, 0.5);
+    --shadow-glow-xl: 0 0 60px rgba(134, 87, 241, 0.6);
+    
+    /* Colored Shadows */
+    --shadow-primary: 0 10px 40px -10px rgba(33, 134, 235, 0.3);
+    --shadow-secondary: 0 10px 40px -10px rgba(134, 87, 241, 0.3);
+    --shadow-accent: 0 10px 40px -10px rgba(6, 255, 165, 0.3);
+    
+    /* ========== Transitions & Animations ========== */
+    
+    --transition-fast: 150ms;
+    --transition-base: 250ms;
+    --transition-slow: 350ms;
+    --transition-slower: 500ms;
+    
+    --ease-linear: linear;
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    
+    /* ========== Z-Index Scale ========== */
+    
+    --z-base: 0;
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-overlay: 30;
+    --z-modal: 40;
+    --z-popover: 50;
+    --z-tooltip: 60;
+    --z-notification: 70;
+    --z-max: 9999;
+    
+    /* ========== Canvas Colors ========== */
+    
+    --canvas-bg: var(--dark-950);
+    --canvas-grid: rgba(255, 255, 255, 0.03);
+    
+    /* ========== Wave Color Palettes ========== */
+    
+    /* Rainbow Palette */
+    --wave-rainbow-1: #ff0080;
+    --wave-rainbow-2: #ff8c00;
+    --wave-rainbow-3: #ffd700;
+    --wave-rainbow-4: #00ff00;
+    --wave-rainbow-5: #00ffff;
+    --wave-rainbow-6: #0080ff;
+    --wave-rainbow-7: #8000ff;
+    --wave-rainbow-8: #ff00ff;
+    
+    /* Ocean Palette */
+    --wave-ocean-1: #001f3f;
+    --wave-ocean-2: #003f7f;
+    --wave-ocean-3: #0074d9;
+    --wave-ocean-4: #39cccc;
+    --wave-ocean-5: #7fdbff;
+    --wave-ocean-6: #b3ecff;
+    --wave-ocean-7: #e6f7ff;
+    --wave-ocean-8: #ffffff;
+    
+    /* Sunset Palette */
+    --wave-sunset-1: #120e2e;
+    --wave-sunset-2: #392549;
+    --wave-sunset-3: #6b2c5f;
+    --wave-sunset-4: #a33561;
+    --wave-sunset-5: #d64545;
+    --wave-sunset-6: #ff6b35;
+    --wave-sunset-7: #ffa947;
+    --wave-sunset-8: #ffd23f;
+    
+    /* Aurora Palette */
+    --wave-aurora-1: #011926;
+    --wave-aurora-2: #003e5c;
+    --wave-aurora-3: #016a70;
+    --wave-aurora-4: #00a896;
+    --wave-aurora-5: #02c39a;
+    --wave-aurora-6: #7fd8be;
+    --wave-aurora-7: #b8f3d0;
+    --wave-aurora-8: #e8fcc2;
+    
+    /* ========== Gradients ========== */
+    
+    --gradient-primary: linear-gradient(135deg, var(--primary-400) 0%, var(--secondary-500) 100%);
+    --gradient-dark: linear-gradient(135deg, var(--dark-900) 0%, var(--dark-800) 100%);
+    --gradient-vibrant: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-sunset: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --gradient-ocean: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+    --gradient-aurora: linear-gradient(135deg, #13547a 0%, #80d0c7 100%);
+    --gradient-cosmic: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    
+    /* Mesh Gradients */
+    --gradient-mesh-1: radial-gradient(at 40% 20%, hsla(280, 100%, 70%, 0.3) 0px, transparent 50%),
+                       radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 0.3) 0px, transparent 50%),
+                       radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 0.3) 0px, transparent 50%);
+    
+    --gradient-mesh-2: radial-gradient(at 0% 0%, hsla(253, 100%, 70%, 0.3) 0px, transparent 50%),
+                       radial-gradient(at 50% 50%, hsla(180, 100%, 70%, 0.3) 0px, transparent 50%),
+                       radial-gradient(at 100% 100%, hsla(339, 100%, 70%, 0.3) 0px, transparent 50%);
+    
+    /* ========== Filters & Effects ========== */
+    
+    --blur-sm: blur(4px);
+    --blur-md: blur(8px);
+    --blur-lg: blur(16px);
+    --blur-xl: blur(24px);
+    
+    --brightness-dim: brightness(0.8);
+    --brightness-normal: brightness(1);
+    --brightness-bright: brightness(1.2);
+    
+    --saturate-low: saturate(0.5);
+    --saturate-normal: saturate(1);
+    --saturate-high: saturate(1.5);
+    
+    /* ========== Custom Properties ========== */
+    
+    --wave-opacity: 0.8;
+    --wave-blend-mode: screen;
+    --interference-intensity: 0.9;
+    --glow-intensity: 0.6;
+    --animation-duration: 20s;
+    --grid-size: 20px;
+    --noise-opacity: 0.02;
+}
