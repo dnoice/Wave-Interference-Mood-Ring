@@ -76,10 +76,25 @@
         transform: translateX(100%);
         z-index: var(--z-overlay);
         box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+        /* Prevent interaction when closed */
+        pointer-events: none;
     }
     
     .control-panel.open {
         transform: translateX(0);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        /* Enable interaction when open */
+        pointer-events: auto;
+    }
+    
+    /* Overlay when panel is open on mobile */
+    .control-panel.open::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        left: calc(-100vw + var(--sidebar-width));
     }
     
     .panel-header {
@@ -481,18 +496,28 @@
         transform: scale(0.95);
     }
     
-    .slider {
-        height: 12px;
+    /* Touch-optimized controls */
+    .control-group {
+        margin-bottom: var(--space-6);
     }
     
-    .slider::-webkit-slider-thumb {
-        width: 24px;
-        height: 24px;
+    .control-label {
+        margin-bottom: var(--space-3);
+        font-size: var(--fs-base);
     }
     
-    .slider::-moz-range-thumb {
-        width: 24px;
-        height: 24px;
+    /* Larger touch targets for buttons */
+    .btn-mode,
+    .btn-preset,
+    .tab-button {
+        min-height: 44px;
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    /* Toggle switches optimized for touch */
+    .toggle-switch {
+        transform: scale(1.2);
+        margin: var(--space-2);
     }
 }
 
